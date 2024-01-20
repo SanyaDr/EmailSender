@@ -1,0 +1,38 @@
+.labelInputs{
+    color: darkgray;
+}
+.emailInputs{
+    width: 100%;
+    border: none;
+    border-radius: 3px;
+    height: 40px;
+    margin: 3px;
+    
+}
+.emailInputs:hover{
+    width: 100%;
+    border: none;
+    background-color: #dadada;
+
+}
+.mainTextInput {
+    min-height: 400px;
+    height: 60%;
+    border: solid 1px darkgray;
+    border-radius: 3px;
+    /*margin-top: 10px*/
+    /*width: 100%;*/
+}
+.mainTextInput:hover{
+    background-color: white;
+    border: solid 1px gray;
+    border-radius: 3px;
+}
+.sendEmailSubmitButton{
+    margin-top: 12px;
+    color: black;
+    background-color: #ffd21f;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+}

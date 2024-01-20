@@ -1,8 +1,36 @@
 @page "/New"
+@using EmailSender.Models
 <h3 style="horiz-align: center">Новое письмо!</h3>
+<br>
+<EditForm Model="@_emailMessage" OnValidSubmit="OnSubmitEmail">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="">
+        <div class="">
+            <input type="email" placeholder="Кому: " class="emailInputs" id="emailInp">
+        </div>
 
+        <div >
+            <input type="text" placeholder="Тема: " class="emailInputs" id="subjectInp">
+        </div>
+<hr style="margin: 20px 0;">
+        <div >
+            @* <input type="text" placeholder="Напишите что-нибудь: " class="emailInputs mainTextInput" id="textInp"> *@
+            <textarea class="emailInputs mainTextInput" placeholder="Напишите что-нибудь"></textarea>
+        </div>
+        <button type="submit" class="sendEmailSubmitButton">
+            <strong>Отправить</strong>
+        </button>
+    </div>
+</EditForm>
 
 
 @code {
-    
+
+    EmailModel _emailMessage = new();
+
+    private void OnSubmitEmail()
+    {
+    }
+
 }

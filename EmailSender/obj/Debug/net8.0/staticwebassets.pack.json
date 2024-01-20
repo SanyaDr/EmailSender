@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\VS projects\\ASP net code\\EmailSender\\EmailSender\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\EmailSender.bundle.scp.css",
+      "PackagePath": "staticwebassets\\EmailSender.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\VS projects\\ASP net code\\EmailSender\\EmailSender\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\VS projects\\ASP net code\\EmailSender\\EmailSender\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\VS projects\\ASP net code\\EmailSender\\EmailSender\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\VS projects\\ASP net code\\EmailSender\\EmailSender\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "C:\\VS projects\\ASP net code\\EmailSender\\EmailSender\\wwwroot\\mainStyles.css",
+      "PackagePath": "staticwebassets\\mainStyles.css"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.EmailSender.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.EmailSender.props",
+      "PackagePath": "build\\EmailSender.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.EmailSender.props",
+      "PackagePath": "buildMultiTargeting\\EmailSender.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.EmailSender.props",
+      "PackagePath": "buildTransitive\\EmailSender.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

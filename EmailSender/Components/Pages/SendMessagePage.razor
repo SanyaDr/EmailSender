@@ -1,36 +1,61 @@
 @page "/New"
 @using EmailSender.Models
+@using EmailSender.Controllers
+@inject EmailController EmailController
+@rendermode InteractiveServer
+<PageTitle>Новое письмо</PageTitle>
 <h3 style="horiz-align: center">Новое письмо!</h3>
 <br>
-<EditForm Model="@_emailMessage" OnValidSubmit="OnSubmitEmail">
+<EditForm Model="@_emailMessage" OnValidSubmit="OnSubmitEmail" FormName="SendMessageForm">
     <DataAnnotationsValidator/>
-    <ValidationSummary/>
-    <div class="">
-        <div class="">
-            <input type="email" placeholder="Кому: " class="emailInputs" id="emailInp">
-        </div>
 
-        <div >
-            <input type="text" placeholder="Тема: " class="emailInputs" id="subjectInp">
-        </div>
-<hr style="margin: 20px 0;">
-        <div >
-            @* <input type="text" placeholder="Напишите что-нибудь: " class="emailInputs mainTextInput" id="textInp"> *@
-            <textarea class="emailInputs mainTextInput" placeholder="Напишите что-нибудь"></textarea>
-        </div>
-        <button type="submit" class="sendEmailSubmitButton">
-            <strong>Отправить</strong>
-        </button>
+    <div class="form-group">
+        @* <input type="email" placeholder="Кому: " class="emailInputs" id="emailInp"> *@
+        <label for="email">Кому</label>
+        <InputText @bind-Value="_emailMessage.Email" class="form-control" id="email"/>
+        <ValidationMessage For="() => _emailMessage.Email" />
+
     </div>
+
+    <div class="form-group">
+        @* <input type="text" placeholder="Тема: " class="emailInputs" id="subjectInp"> *@
+        <label for="subject">Тема</label>
+        <InputText @bind-Value=_emailMessage.Subject class="form-control" id="subject"/>
+        <ValidationMessage For="() => _emailMessage.Subject" />
+    </div>
+    <hr style="margin: 20px 0;">
+    <div class="form-group">
+        <label for="message">Сообщение</label>
+        <InputTextArea @bind-Value=_emailMessage.Text class="form-control" id="message"/>
+        <ValidationMessage For="() => _emailMessage.Text"/>
+    </div>
+    <button type="submit" class="sendEmailSubmitButton">
+        <strong>Отправить</strong>
+    </button>
+    @* <ValidationSummary/> *@
+    
 </EditForm>
 
+@result
 
 @code {
 
+    string result;
+    string login;
     EmailModel _emailMessage = new();
-
-    private void OnSubmitEmail()
+    
+    private async Task OnSubmitEmail()
     {
+        try
+        {
+            result = "Отправка...";
+            await EmailController.SendMessage(_emailMessage.Email, _emailMessage.Subject, _emailMessage.Text);
+            result = "Письмо успешно отправлено!";
+        }
+        catch (Exception ex)
+        {
+            result = ex.Message;
+        }
     }
 
 }

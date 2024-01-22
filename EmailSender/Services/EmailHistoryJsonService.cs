@@ -7,6 +7,16 @@ namespace EmailSender.Services;
 
 public class EmailHistoryJsonService: IEmailHistorySaver
 {
+    public EmailHistoryJsonService()
+    {
+        if (!File.Exists("./History.json"))
+        {
+            File.Create("./History.json").Close();
+            Thread.Sleep(50);
+            // StreamWriter sr = new StreamWriter("./History.json");
+            // sr.
+        }
+    }
     public async Task AddToHistory(EmailModel newMessage)
     {
         string json = await File.ReadAllTextAsync("./History.json");
@@ -21,7 +31,7 @@ public class EmailHistoryJsonService: IEmailHistorySaver
         await File.WriteAllTextAsync("./History.json", json);
     }
 
-    public async Task<IReadOnlyCollection<EmailModel>> GetHistory()
+    public IReadOnlyCollection<EmailModel> GetHistory()
     {
         string json = File.ReadAllText("./History.json");
         var hist = JsonConvert.DeserializeObject<IReadOnlyCollection<EmailModel>>(json) ??

@@ -46,9 +46,9 @@ else
         GetHistory();
     }
 
-    private async Task GetHistory()
+    private void GetHistory()
     {
-        var t = await EmailHistorySaver.GetHistory();
+        var t = EmailHistorySaver.GetHistory();
         _history = t.ToList();
     }
     

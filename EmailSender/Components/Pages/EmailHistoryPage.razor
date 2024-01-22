@@ -1,0 +1,71 @@
+@page "/history"
+@* @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage *@
+@using EmailSender.Models
+@using EmailSender.Interface
+@inject IEmailHistorySaver EmailHistorySaver;
+@rendermode InteractiveServer
+
+<PageTitle>Отправленные</PageTitle>
+<h1>История почты</h1>
+<p style="font-size: 15px; text-decoration: underline"> Показываются первые 200 сообщений </p>
+<br>
+
+@if (_history == null)
+{
+    <p>Загрузка...</p>
+}
+else
+{
+    @if (_history.Count > 0)
+    {
+        <hr/>
+        for (int i =_history.Count - 1; i >= 0; i--)
+        {
+            <p>Письмо от: @_history[i].Date </p>
+            <p>Кому: @_history[i].Email</p>
+            <p>Текст: <br/>@_history[i].Text</p>
+            <hr/>
+        }
+    }
+    else
+    {
+        <p>Писем нет!</p>
+        <button class="MainNewMessageButton" href="/">
+            Новое письмо!
+        </button>
+    }
+}
+@* <button @onclick="() => AddHist()">Добавить запись</button> *@
+
+
+@code {
+    List<EmailModel>? _history;
+
+    protected override void OnInitialized()
+    {
+        GetHistory();
+    }
+
+    private async Task GetHistory()
+    {
+        var t = await EmailHistorySaver.GetHistory();
+        _history = t.ToList();
+    }
+    
+
+    // private async Task AddHist()
+    // {
+    //     await EmailHistorySaver.AddToHistory(new EmailModel()
+    //     {
+    //         Email = "mr.drovosekov@mail",
+    //         Date = DateOnly.FromDateTime(DateTime.Now),
+    //         Subject = "Тестовое сообщение",
+    //         Text = "Привет! Мое сообщение для истории!1!"
+    //     });
+    // }
+    // private void SetToSt()
+    // {
+    //     localStorage.SetItem("test", "MyNewData!");
+    // }
+
+}

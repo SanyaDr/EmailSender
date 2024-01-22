@@ -1,3 +1,5 @@
+using EmailSender.Interface;
+using EmailSender.Models;
 using MimeKit;
 using MailKit.Net.Smtp;
 using Newtonsoft.Json;
@@ -27,13 +29,6 @@ public class EmailService
         cfg.password = JCfg["password"].ToString();
         cfg.port = JCfg["port"].Value<int>();
         
-            
-        // var cfg = JsonConvert.DeserializeObject<emailConfig>(File.ReadAllText("config.json"));
-        // if (cfg == null)
-        // {
-        //     throw new NullReferenceException("Email config is null, please check JSON deserializer!");
-        // }
-
         emailMessage.From.Add(new MailboxAddress("Информирование от сайта BlazorSender", cfg.login));
         emailMessage.To.Add(new MailboxAddress("", email));
         emailMessage.Subject = subject;
@@ -41,6 +36,17 @@ public class EmailService
         {
             Text = text
         };
+
+        {
+            EmailHistoryJsonService saver = new();
+            await saver.AddToHistory(new EmailModel()
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now),
+                Email = email,
+                Subject = subject,
+                Text = text
+            });
+        }
 
         using (var client = new SmtpClient())
         {

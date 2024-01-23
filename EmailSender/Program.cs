@@ -1,7 +1,7 @@
-using Blazored.LocalStorage;
+// using Blazored.LocalStorage;
 using EmailSender.Components;
-using EmailSender.Controllers;
 using EmailSender.Interface;
+using EmailSender.Models;
 using EmailSender.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddSingleton<EmailController>();
 // builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddTransient<EmailService>();
+builder.Services.Configure<SmtpConfig>(options =>
+{
+    builder.Configuration.GetSection("EmailConfig").Bind(options);
+});
 builder.Services.AddScoped<IEmailHistorySaver, EmailHistoryJsonService>();
 
 var app = builder.Build();

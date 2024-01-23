@@ -1,7 +1,7 @@
 @page "/New"
 @using EmailSender.Models
-@using EmailSender.Controllers
-@inject EmailController EmailController
+@using EmailSender.Services
+@inject EmailService EmailSender
 @inject ILogger<SendMessagePage> Logger;
 @rendermode InteractiveServer
 <PageTitle>Новое письмо</PageTitle>
@@ -40,9 +40,8 @@
 @result
 
 @code {
-
+    
     string result;
-    string login;
     EmailModel _emailMessage = new();
     
     private async Task OnSubmitEmail()
@@ -51,8 +50,9 @@
         try
         {
             result = "Отправка...";
-            await EmailController.SendMessage(_emailMessage.Email, _emailMessage.Subject, _emailMessage.Text);
+            await EmailSender.SendMessageAsync(_emailMessage.Email, _emailMessage.Subject, _emailMessage.Text);
             result = "Письмо успешно отправлено!";
+            _emailMessage = new();
         }
         catch (Exception ex)
         {

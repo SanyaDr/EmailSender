@@ -15,6 +15,8 @@ builder.Services.AddTransient<EmailService>();
 builder.Services.Configure<SmtpConfig>(options =>
 {
     builder.Configuration.GetSection("EmailConfig").Bind(options);
+    options.UserName = builder.Configuration["SmtpLogin"] ?? "";
+    options.Password = builder.Configuration["Password"] ?? "";
 });
 builder.Services.AddScoped<IEmailHistorySaver, EmailHistoryJsonService>();
 

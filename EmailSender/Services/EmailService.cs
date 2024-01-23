@@ -2,8 +2,6 @@ using EmailSender.Models;
 using MimeKit;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
-
-
 namespace EmailSender.Services;
 
 public class EmailService

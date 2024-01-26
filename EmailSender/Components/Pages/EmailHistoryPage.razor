@@ -2,6 +2,7 @@
 @* @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage *@
 @using EmailSender.Models
 @using EmailSender.Interface
+@inject NavigationManager NavigationManager
 @inject IEmailHistorySaver EmailHistorySaver;
 @rendermode InteractiveServer
 
@@ -30,13 +31,11 @@ else
     else
     {
         <p>Писем нет!</p>
-        <button class="MainNewMessageButton" href="/">
+        <button class="MainNewMessageButton" @onclick="OpenNewMessagePage">
             Новое письмо!
         </button>
     }
 }
-@* <button @onclick="() => AddHist()">Добавить запись</button> *@
-
 
 @code {
     List<EmailModel>? _history;
@@ -51,21 +50,9 @@ else
         var t = EmailHistorySaver.GetHistory();
         _history = t.ToList();
     }
-    
 
-    // private async Task AddHist()
-    // {
-    //     await EmailHistorySaver.AddToHistory(new EmailModel()
-    //     {
-    //         Email = "mr.drovosekov@mail",
-    //         Date = DateOnly.FromDateTime(DateTime.Now),
-    //         Subject = "Тестовое сообщение",
-    //         Text = "Привет! Мое сообщение для истории!1!"
-    //     });
-    // }
-    // private void SetToSt()
-    // {
-    //     localStorage.SetItem("test", "MyNewData!");
-    // }
-
+    private void OpenNewMessagePage()
+    {
+        NavigationManager.NavigateTo("/New");
+    }
 }

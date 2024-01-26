@@ -3,6 +3,7 @@ using EmailSender.Components;
 using EmailSender.Interface;
 using EmailSender.Models;
 using EmailSender.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,11 @@ builder.Services.Configure<SmtpConfig>(options =>
     options.Password = builder.Configuration["Password"] ?? "";
 });
 builder.Services.AddScoped<IEmailHistorySaver, EmailHistoryJsonService>();
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+Log.Information("App is starting..");
+builder.Host.UseSerilog();
+builder.Services.AddSerilog();
+
 
 var app = builder.Build();
 

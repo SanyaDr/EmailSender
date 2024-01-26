@@ -1,6 +1,10 @@
 @page "/New"
 @using EmailSender.Models
 @using EmailSender.Services
+@using MailKit
+@using MailKit.Security
+@using MimeKit
+@using System.Net.Sockets
 @inject EmailService EmailSender
 @inject ILogger<SendMessagePage> Logger;
 @rendermode InteractiveServer
@@ -11,18 +15,16 @@
     <DataAnnotationsValidator/>
 
     <div class="form-group">
-        @* <input type="email" placeholder="Кому: " class="emailInputs" id="emailInp"> *@
         <label for="email">Кому</label>
         <InputText @bind-Value="_emailMessage.Email" class="form-control" id="email"/>
-        <ValidationMessage For="() => _emailMessage.Email" />
+        <ValidationMessage For="() => _emailMessage.Email"/>
 
     </div>
 
     <div class="form-group">
-        @* <input type="text" placeholder="Тема: " class="emailInputs" id="subjectInp"> *@
         <label for="subject">Тема</label>
         <InputText @bind-Value=_emailMessage.Subject class="form-control" id="subject"/>
-        <ValidationMessage For="() => _emailMessage.Subject" />
+        <ValidationMessage For="() => _emailMessage.Subject"/>
     </div>
     <hr style="margin: 20px 0;">
     <div class="form-group">
@@ -34,29 +36,83 @@
         <strong>Отправить</strong>
     </button>
     @* <ValidationSummary/> *@
-    
+
 </EditForm>
 
 @result
 
 @code {
-    
+
     string result;
+    int countAttempts = 0;
     EmailModel _emailMessage = new();
-    
+
     private async Task OnSubmitEmail()
     {
-        Logger.LogInformation("Попытка отправки Email");
+        countAttempts++;
+        Logger.LogInformation("Попытка отправки Email.. ([{x}])", countAttempts);
         try
         {
             result = "Отправка...";
             await EmailSender.SendMessageAsync(_emailMessage.Email, _emailMessage.Subject, _emailMessage.Text);
             result = "Письмо успешно отправлено!";
+            Logger.LogInformation("Email отправлен успешно!");
+            {
+                EmailHistoryJsonService saver = new();
+                await saver.AddToHistory(new EmailModel()
+                {
+                    Date = DateOnly.FromDateTime(DateTime.Now),
+                    Email = _emailMessage.Email,
+                    Subject = _emailMessage.Subject,
+                    Text = _emailMessage.Text
+                });
+            }
             _emailMessage = new();
         }
-        catch (Exception ex)
+        catch (Exception e) when (e is OperationCanceledException)
         {
-            result = ex.Message;
+            result = "Операция отменена!";
+        }
+        catch (Exception e) when (countAttempts < 3 &&
+                                  e is ServiceNotConnectedException
+                                      or ServiceNotAuthenticatedException
+                                      or ProtocolException
+                                      or IOException
+                                      or CommandException
+                                      or SocketException
+                                 )
+        {
+            await Task.Delay(5000);
+            await OnSubmitEmail();
+        }
+        catch (Exception e) when (countAttempts >= 3)
+        {
+            result = "Ошибка подключения к серверу, повторите позже!";
+            Logger.LogError(e, "Ошибка отправки письма после 3 повторений!");
+        }
+        catch (Exception e) when (e is ArgumentNullException
+                                      or ObjectDisposedException
+                                      or InvalidOperationException
+                                      or AuthenticationException
+                                      or SaslException
+                                 )
+        {
+            result = "Произошла внутренняя ошибка сервера! Пожалуйста повторите позже";
+            Logger.LogError(e, "Ошибка отправки письма! Требует внимания!");
+        }
+        catch (Exception e) when (e is ParseException)
+        {
+            result = "Произошла внутренняя ошибка сервера! Пожалуйста повторите позже!";
+            Logger.LogError(e, "ОШИБКА! Проверьте appsettings.json");
+        }
+        catch (Exception e)
+        {
+            result = "Неизвестная ошибка! Пожалуйста повторите позже!";
+            Logger.LogCritical(e, "Необработанное исключение!!!");
+        }
+        finally
+        {
+            countAttempts = 0;
         }
     }
 
